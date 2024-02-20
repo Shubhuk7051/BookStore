@@ -1,0 +1,27 @@
+{% extends "D:\Projects\Bookshopy\bookstore\templates\base.html"%}
+{% load static%}
+
+{% block title %}
+    <title>Welcome to BookStore!</title>
+{% endblock title %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-lg-4">
+                <img src="{% static 'images/book1.jpg' %}" alt="book1" class="rounded-lg shadow bg-body-tertiary rounded" width="360" height="250">
+            </div>
+            
+            <div class="col-lg-4">
+                <img src="{% static 'images/book2.jpg' %}" alt="book2" class="rounded-lg shadow bg-body-tertiary rounded" width="360" height="250">
+            </div>
+
+            <div class="col-lg-4">
+                <img src="{% static 'images/book3.jpg' %}" alt="book3" class="rounded-lg shadow bg-body-tertiary rounded" width="360" height="250">
+            </div>
+        </div>
+    </div>
+            
+        
+{% endblock content %}

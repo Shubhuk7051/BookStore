@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    <title>Payment</title>
+{% endblock title %}
+
+{% block content %}
+
+    <h1>Payment Details</h1>
+    <p>Amount: {{ order.get_ }}</p>
+    <p>Currency: {{ order.currency }}</p>
+    <p>Order ID: {{ order.id }}</p>
+    <form action="{% url 'process_payment' %}" method="post">
+        {% csrf_token %}
+        <script src="https://checkout.razorpay.com/v1/checkout.js"
+                data-key="{{ order.key }}"
+                data-amount="{{ order.amount }}"
+                data-currency="INR"
+                data-order_id="{{ order.id }}"
+                data-buttontext="Pay with Razorpay"
+                data-name="Bookstore"
+                data-description="Payment for Order #{{ order.id }}"
+                data-image="{% static 'your_logo.png' %}"
+                data-prefill.name="Your Name"
+                data-prefill.email="your@email.com"
+                data-theme.color="#F37254">
+        </script>
+    </form>
+{% endblock content %}

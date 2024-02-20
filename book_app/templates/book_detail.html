@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title> {{books.name}} </title>
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+      <div class="col-md-6 mt-3">
+        <img src="{{ book.imageURL }}" alt="{{ book.title }}" class="img-fluid" height=500, width=300>
+      </div>
+      <div class="col-md-6 mt-3">
+        <h1>{{ book.name }}</h1>
+        <p>{{ book.description }}</p>
+        <p>Price: Rs {{ book.price }}</p>
+        <a href='{% url 'add_to_cart' book.id %}' class="btn btn-primary">Add to Cart</a>
+        <a href="{% url 'checkout' %}" class="btn btn-primary">Buy Now</a>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
