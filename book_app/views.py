@@ -41,6 +41,19 @@ def add_to_cart(request, pk):
     order_item.save()
     return redirect('cart')
 
+@login_required
+def remove_from_cart(request,pk):
+    user = request.user
+    customer = get_or_create_customer(user)
+    book = get_object_or_404(Book, pk=pk)
+    order_item=OrderItem.objects.filter(order__customer=customer,book=book).first()
+    if order_item.quantity > 1:
+        order_item.quantity -= 1
+        order_item.save()
+    else:
+        order_item.delete()
+    return redirect('cart')
+
 @login_required    
 def cart(request):
     
@@ -66,7 +79,7 @@ def cart(request):
             # Redirect to a thank you or order confirmation page
             return redirect('cart')
     return render(request,'cart.html', context)
-
+    
 @login_required
 def checkout(request):
     

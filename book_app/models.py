@@ -8,6 +8,7 @@ class Customer(models.Model):
     user=models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, related_name='customer')
     name=models.CharField(max_length=100, null=True)
     email=models.CharField(max_length=300, null=True)
+    is_active=models.BooleanField(default=False)
     
     def __str__(self) -> str:
         return str(self.name)

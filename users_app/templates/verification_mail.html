@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Account Activation</title>
+</head>
+<body>
+    <h2>Hi {{ user.name }},</h2>
+    <p>Welcome to our BookStore project! Please activate your account by clicking the link below:</p>
+    <p><a href=http://{{ domain }}{% url 'activate' uidb64=uid token=token %}>Activate Your Account</a></p>
+    <p>If you did not sign up for an account on our BookStore project, you can safely ignore this email.</p>
+    <p>Thank you!</p>
+</body>
+</html>
