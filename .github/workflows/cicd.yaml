@@ -135,7 +135,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile
+          file: ./docker-compose.yaml
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/bookstore:${{ github.run_id }}
 
