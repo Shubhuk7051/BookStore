@@ -1,0 +1,130 @@
+name: BookStore CI/CD
+
+on:
+  push:
+    branches: 
+      - main
+    paths-ignore:
+      - 'helm/**'
+      - 'k8s/**'
+      - 'README.md'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set Up Python 3.9
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.9
+      
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Run Django Migration
+        env:
+          DJANGO_SETTINGS_MODULE: bookstore.settings
+        run: |
+          python manage.py migrate
+
+      - name: Run Tests
+        run: |
+          python manage.py test
+  
+  code-quality: 
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set Up Python 3.9
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.9
+
+      - name: Install Dependencies for Code Quality
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8 pylint black isort mypy
+
+      - name: Run Flake8 (Linting)
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
+
+      - name: Run Pylint (Linting)
+        run: |
+          pylint $(find . -name "*.py" | xargs)
+
+      - name: Run Black (Code Formatting)
+        run: |
+          black --check .
+
+      - name: Run isort (Import Order)
+        run: |
+          isort --check-only .
+        
+      - name: Run Mypy (Type Checking)
+        run: |
+          mypy .
+        
+  push:
+
+    runs-on: ubuntu-latest
+
+    needs: build
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_SECRET }}
+
+      - name: Build and Push action
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/bookstore:${{github.run_id}}
+
+  update-newtag-in-helm-chart:
+    runs-on: ubuntu-latest
+
+    needs: push
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.TOKEN }}
+
+    - name: Update tag in Helm chart
+      run: |
+        sed -i 's/tag: .*/tag: "${{github.run_id}}"/' helm/bookstore-chart/values.yaml
+
+    - name: Commit and push changes
+      run: |
+        git config --global user.email "shubhamkatre7051@gmail.com"
+        git config --global user.name "Shubham Katre"
+        git add helm/bookstore-chart/values.yaml
+        git commit -m "Update tag in Helm chart"
+        git push
+
+
