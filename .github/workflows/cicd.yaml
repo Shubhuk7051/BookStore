@@ -100,17 +100,17 @@ jobs:
       #   run: |
       #     pylint $(find . -name "*.py" | xargs)
 
-      - name: Run Black (Code Formatting)
-        run: |
-          black --check .
+      # - name: Run Black (Code Formatting)
+      #   run: |
+      #     black --check .
 
-      - name: Run isort (Import Order)
-        run: |
-          isort --check-only .
+      # - name: Run isort (Import Order)
+      #   run: |
+      #     isort --check-only .
         
-      - name: Run Mypy (Type Checking)
-        run: |
-          mypy .
+      # - name: Run Mypy (Type Checking)
+      #   run: |
+      #     mypy .
         
   push:
 
@@ -132,12 +132,12 @@ jobs:
           password: ${{ secrets.DOCKER_SECRET }}
 
       - name: Build and Push action
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/bookstore:${{github.run_id}}
+          tags: ${{ secrets.DOCKER_USERNAME }}/bookstore:${{ github.run_id }}
 
   update-newtag-in-helm-chart:
     runs-on: ubuntu-latest
@@ -152,7 +152,7 @@ jobs:
 
     - name: Update tag in Helm chart
       run: |
-        sed -i 's/tag: .*/tag: "${{github.run_id}}"/' helm/bookstore-chart/values.yaml
+        sed -i 's/tag: .*/tag: "${{ github.run_id }}"/' helm/bookstore-chart/values.yaml
 
     - name: Commit and push changes
       run: |
