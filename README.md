@@ -19,8 +19,8 @@ This is a Django-based web application for managing a bookstore. It provides fea
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yourusername/bookstore-django.git
-   cd bookstore-django
+   git clone https://github.com/Shubhuk7051/BookStore.git
+   cd BookStore
 
 2. **Create a virtual environment and activate it:**
 
