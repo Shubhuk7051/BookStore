@@ -35,7 +35,7 @@ This is a Django-based web application for managing a bookstore. It provides fea
 
 
 4. **Create a Django secret key:**
-     Use GIT Bash in Windows OS or Direct command in Linux Server.
+     Use GIT Bash on Windows OS or Run command in Linux Server.
 
     ```bash
     python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
